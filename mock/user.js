@@ -1,4 +1,3 @@
-
 const tokens = {
   admin: {
     token: 'admin-token'
@@ -23,7 +22,7 @@ const users = {
   }
 }
 
-export default [
+exports.default = [
   // user login
   {
     url: '/user/login',
@@ -49,7 +48,7 @@ export default [
 
   // get user info
   {
-    url: '/user/info\.*',
+    url: '/user/info.*',
     type: 'get',
     response: config => {
       const { token } = config.query

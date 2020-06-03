@@ -1,15 +1,18 @@
-import Mock from 'mockjs'
-import { param2Obj } from '../src/utils'
+// import user from './user'
+// import table from './table'
 
-import user from './user'
-import table from './table'
+// const mocks = [...user, ...table]
+const Mock = require('mockjs')
+const user = require('./user')
+const table = require('./table')
 
-const mocks = [...user, ...table]
+const mocks = [...user.default, ...table.default]
 
 // for front mock
 // please use it cautiously, it will redefine XMLHttpRequest,
 // which will cause many of your third-party libraries to be invalidated(like progress event).
-export function mockXHR() {
+
+exports.mockXHR = function mockXHR() {
   // mock patch
   // https://github.com/nuysoft/Mock/issues/300
   Mock.XHR.prototype.proxy_send = Mock.XHR.prototype.send
@@ -47,17 +50,20 @@ export function mockXHR() {
   }
 }
 
-// for mock server
-const responseFake = (url, type, respond) => {
-  return {
-    url: new RegExp(`/mock${url}`),
-    type: type || 'get',
-    response(req, res) {
-      res.json(Mock.mock(respond instanceof Function ? respond(req, res) : respond))
-    }
+function param2Obj(url) {
+  const search = url.split('?')[1]
+  if (!search) {
+    return {}
   }
+  return JSON.parse(
+    '{"' +
+      decodeURIComponent(search)
+        .replace(/"/g, '\\"')
+        .replace(/&/g, '","')
+        .replace(/=/g, '":"')
+        .replace(/\+/g, ' ') +
+      '"}'
+  )
 }
 
-export default mocks.map(route => {
-  return responseFake(route.url, route.type, route.response)
-})
+exports.default = mocks

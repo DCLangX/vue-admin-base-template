@@ -1,4 +1,4 @@
-# vue-admin-base
+# 基于vue-admin-template修改的自用基础后台
 
 ## Project setup
 ```
